@@ -153,3 +153,9 @@ button {
 .fa-power-off {
   text-align: center;
 }
+
+.remoteButtons{
+    width: 80px;
+    height: 80px;
+    background-color: #80808052;
+}

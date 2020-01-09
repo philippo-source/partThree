@@ -40,7 +40,7 @@ function createMapsDivs(){
   mainElement.innerHTML = '';
 
   var div = document.createElement("div");
-  div.setAttribute('style','text-align:center');
+  div.setAttribute('style','text-align:center; padding-top:10px');
   mainElement.appendChild(div);
 
   var ifrm = document.createElement("iframe");
@@ -49,6 +49,17 @@ function createMapsDivs(){
     ifrm.style.height = "400px";
 
   div.appendChild(ifrm);
+
+  var div = document.createElement("div");
+  div.setAttribute('id','Position');
+  div.setAttribute('style','text-align:center;padding-top:20px');
+  mainElement.appendChild(div);
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else {
+    newCarDataDiv2_2.innerHTML = "Geolocation is not supported by this browser.";
+  }
 
 }
 
@@ -79,32 +90,33 @@ console.log = function (message) {
 
 function showPosition(position) {
 
-   var newCarDataDiv2_2 = document.getElementById("CarData2").children[1]
+   var newPosition = document.getElementById("Position");
 
-  newCarDataDiv2_2.innerText = "Lat: " + position.coords.latitude +
+   newPosition.innerText = "Lat: " + position.coords.latitude +
   ", Long: " + position.coords.longitude;
 }
 
 
-//setTimeout (createCarDataDivs, 1000);
 
-async function createCarDataDivs() {
+
+ async function createCarDataDivs() {
+
 
 
     let mainElement = document.querySelector('main');
 
     mainElement.innerHTML = '';
 
+   
 
-
-      const response = await fetch('http://169.254.65.26:5000/status');
+      const response = await fetch('http://192.168.0.52:5000/status');
       const myJson = await response.json();
       console.log(JSON.stringify(myJson));
 
 
 
     var newCarDataDiv1 = document.createElement("div");
-    var newCarDataDiv2 = document.createElement("div");
+   
     var newCarDataDiv3 = document.createElement("div");
     var newCarDataDiv4 = document.createElement("div");
     var newCarDataDiv5 = document.createElement("div");
@@ -113,23 +125,22 @@ async function createCarDataDivs() {
 
 
     newCarDataDiv1.setAttribute('id', 'CarData1');
-    newCarDataDiv1.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
-    newCarDataDiv2.setAttribute('id', 'CarData2');
-    newCarDataDiv2.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
+    newCarDataDiv1.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
+    
     newCarDataDiv3.setAttribute('id', 'CarData3');
-    newCarDataDiv3.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
+    newCarDataDiv3.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
     newCarDataDiv4.setAttribute('id', 'CarData4');
-    newCarDataDiv4.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
+    newCarDataDiv4.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
     newCarDataDiv5.setAttribute('id', 'CarData5');
-    newCarDataDiv5.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
+    newCarDataDiv5.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
     newCarDataDiv6.setAttribute('id', 'CarData6');
-    newCarDataDiv6.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
+    newCarDataDiv6.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
     newCarDataDiv7.setAttribute('id', 'CarData7');
-    newCarDataDiv7.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
+    newCarDataDiv7.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
 
 
     mainElement.appendChild(newCarDataDiv1);
-    mainElement.appendChild(newCarDataDiv2);
+  
     mainElement.appendChild(newCarDataDiv3);
     mainElement.appendChild(newCarDataDiv4);
     mainElement.appendChild(newCarDataDiv5);
@@ -145,22 +156,7 @@ async function createCarDataDivs() {
     document.getElementById("CarData1").appendChild(newCarDataDiv1_2);
 
 
-
-    var newCarDataDiv2_1 = document.createElement("div");
-    newCarDataDiv2_1.setAttribute('style', 'width:30%; float:left');
-    newCarDataDiv2_1.innerText = "Position";
-    var newCarDataDiv2_2 = document.createElement("div");
-
-    document.getElementById("CarData2").appendChild(newCarDataDiv2_1);
-    document.getElementById("CarData2").appendChild(newCarDataDiv2_2);
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-      newCarDataDiv2_2.innerHTML = "Geolocation is not supported by this browser.";
-    }
-
-
+  
 
     var newCarDataDiv3_1 = document.createElement("div");
     newCarDataDiv3_1.setAttribute('style', 'width:30%; float:left');
@@ -202,8 +198,21 @@ async function createCarDataDivs() {
     document.getElementById("CarData7").appendChild(newCarDataDiv7_1);
     document.getElementById("CarData7").appendChild(newCarDataDiv7_2);
 
+    setInterval( async function(){ 
+      const response = await fetch('http://192.168.0.52:5000/status');
+      const myJson = await response.json();
+      console.log(JSON.stringify(myJson));
 
 
+      document.getElementById("CarData1").children[1].innerText = Math.round(myJson.speed) + " km/h";
+      document.getElementById("CarData3").children[1].innerText = myJson.consumption + " l/100km";
+      document.getElementById("CarData4").children[1].innerText = Math.round(70/myJson.consumption*100) + "km";
+      document.getElementById("CarData5").children[1].innerText = Math.round(myJson.humidity) + " %";
+      document.getElementById("CarData6").children[1].innerText = Math.round(myJson.pressure) + " psi";
+      document.getElementById("CarData7").children[1].innerText = Math.round(myJson.temp,100) + " °C";
+
+
+  }, 2000);
 
 }
 
@@ -220,13 +229,13 @@ var newLockDiv4 = document.createElement("div");
 
 
 newLockDiv1.setAttribute('id', 'Lock1');
-newLockDiv1.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
+newLockDiv1.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
 newLockDiv2.setAttribute('id', 'Lock2');
-newLockDiv2.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
+newLockDiv2.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
 newLockDiv3.setAttribute('id', 'Lock3');
-newLockDiv3.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
+newLockDiv3.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
 newLockDiv4.setAttribute('id', 'Lock4');
-newLockDiv4.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
+newLockDiv4.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
 
 
 mainElement.appendChild(newLockDiv1);
@@ -240,10 +249,10 @@ newLockDiv1_1.innerHTML = "Türen";
 var newLockDiv1_2 = document.createElement("div");
 newLockDiv1_2.setAttribute('id','ButtonBereich');
 var buttonCreate = document.createElement("button");
-//buttonCreate.setAttribute = ('id', 'buttonTuerAuf');
+buttonCreate.classList.add("remoteButtons");
 buttonCreate.innerHTML = "Auf";
 var buttonCreate2 = document.createElement("button");
-//buttonCreate2.setAttribute = ('id', 'buttonTuerZu');
+buttonCreate2.classList.add("remoteButtons");
 buttonCreate2.innerHTML = "Zu";
 document.getElementById("Lock1").appendChild(newLockDiv1_1);
 document.getElementById("Lock1").appendChild(newLockDiv1_2);
@@ -259,10 +268,10 @@ newLockDiv2_1.innerHTML = "Fenster vorne";
 var newLockDiv2_2 = document.createElement("div");
 newLockDiv2_2.setAttribute('id','ButtonBereichFensterVorne');
 var buttonCreate3 = document.createElement("button");
-//buttonCreate3.setAttribute = ('id', 'buttonFensterVorneHoch');
+buttonCreate3.classList.add("remoteButtons");
 buttonCreate3.innerHTML = "Hoch";
 var buttonCreate4 = document.createElement("button");
-//buttonCreate4.setAttribute = ('id', 'buttonFensterVorneRunter');
+buttonCreate4.classList.add("remoteButtons");
 buttonCreate4.innerHTML = "Runter";
 document.getElementById("Lock2").appendChild(newLockDiv2_1);
 document.getElementById("Lock2").appendChild(newLockDiv2_2);
@@ -278,10 +287,10 @@ newLockDiv3_1.innerHTML = "Fenster hinten";
 var newLockDiv3_2 = document.createElement("div");
 newLockDiv3_2.setAttribute('id','ButtonBereichFensterHinten');
 var buttonCreate5 = document.createElement("button");
-//buttonCreate5.setAttribute = ('id', 'buttonFensterHintenHoch');
+buttonCreate5.classList.add("remoteButtons");
 buttonCreate5.innerHTML = "Hoch";
 var buttonCreate6 = document.createElement("button");
-//buttonCreate6.setAttribute = ('id', 'buttonFensterHintenRunter');
+buttonCreate6.classList.add("remoteButtons");
 buttonCreate6.innerHTML = "Runter";
 document.getElementById("Lock3").appendChild(newLockDiv3_1);
 document.getElementById("Lock3").appendChild(newLockDiv3_2);
@@ -297,10 +306,10 @@ newLockDiv4_1.innerHTML = "Fenster gesamt";
 var newLockDiv4_2 = document.createElement("div");
 newLockDiv4_2.setAttribute('id','ButtonBereichFensterGesamt');
 var buttonCreate7 = document.createElement("button");
-//buttonCreate7.setAttribute = ('id', 'buttonFensterGesamtHoch');
+buttonCreate7.classList.add("remoteButtons");
 buttonCreate7.innerHTML = "Hoch";
 var buttonCreate8 = document.createElement("button");
-//buttonCreate8.setAttribute = ('id', 'buttonFensterGesamtRunter');
+buttonCreate8.classList.add("remoteButtons");
 buttonCreate8.innerHTML = "Runter";
 document.getElementById("Lock4").appendChild(newLockDiv4_1);
 document.getElementById("Lock4").appendChild(newLockDiv4_2);
@@ -318,7 +327,7 @@ async function createMusikDivs() {
 
     mainElement.innerHTML = '';
 
-    const response = await fetch('http://169.254.65.26:5000/music');
+    const response = await fetch('http://192.168.0.52:5000/music');
     const myJson = await response.json();
     console.log(JSON.stringify(myJson));
 
@@ -327,27 +336,41 @@ var newMusikDiv0 = document.createElement("div");
 var newMusikDiv1 = document.createElement("div");
 var newMusikDiv2 = document.createElement("div");
 var newMusikDiv3 = document.createElement("div");
+var newMusikDiv4 = document.createElement("div");
+var newMusikDiv5 = document.createElement("div");
+var newMusikDiv6 = document.createElement("div");
 
 newMusikDiv0.setAttribute('id', 'musikÜberschrift');
-newMusikDiv0.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
+newMusikDiv0.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
 newMusikDiv1.setAttribute('id', 'musik1');
-newMusikDiv1.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
+newMusikDiv1.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
 newMusikDiv2.setAttribute('id', 'musik2');
-newMusikDiv2.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
+newMusikDiv2.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
 newMusikDiv3.setAttribute('id', 'musik3');
-newMusikDiv3.setAttribute('style', 'margin: 20; display:inline-block; width:100%');
+newMusikDiv3.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
+newMusikDiv4.setAttribute('id', 'musik4');
+newMusikDiv4.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
+newMusikDiv5.setAttribute('id', 'musik5');
+newMusikDiv5.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
+newMusikDiv6.setAttribute('id', 'musik6');
+newMusikDiv6.setAttribute('style', 'margin: 2vh; display:inline-block; width:100%');
+
+
 
 
 mainElement.appendChild(newMusikDiv0);
 mainElement.appendChild(newMusikDiv1);
 mainElement.appendChild(newMusikDiv2);
 mainElement.appendChild(newMusikDiv3);
+mainElement.appendChild(newMusikDiv4);
+mainElement.appendChild(newMusikDiv5);
+mainElement.appendChild(newMusikDiv6);
 
 var newMusikDiv0_1 = document.createElement("div");
-newMusikDiv0_1.setAttribute('style', 'width: 30%; float:left');
+newMusikDiv0_1.setAttribute('style', 'width: 30%; float:left;text-decoration: underline');
 newMusikDiv0_1.innerHTML = "Interpret";
 var newMusikDiv0_2 = document.createElement("div");
-newMusikDiv0_2.setAttribute('style', 'width: 30%; float:left');
+newMusikDiv0_2.setAttribute('style', 'width: 30%; float:left; text-decoration: underline');
 newMusikDiv0_2.innerHTML = "Liedtitel";
 document.getElementById("musikÜberschrift").appendChild(newMusikDiv0_1);
 document.getElementById("musikÜberschrift").appendChild(newMusikDiv0_2);
@@ -425,6 +448,78 @@ document.getElementById("musik3").appendChild(newMusikDiv3_4);
 document.getElementById("audio3").appendChild(newMusikDiv3_5);
 document.getElementById("musik3").appendChild(newMusikDiv3_6);
 
+var newMusikDiv4_1 = document.createElement("div");
+newMusikDiv4_1.setAttribute('style', 'width: 30%; float:left');
+newMusikDiv4_1.innerHTML = myJson[3].artist;
+var newMusikDiv4_2 = document.createElement("div");
+newMusikDiv4_2.setAttribute('style', 'width: 30%; float:left');
+newMusikDiv4_2.innerHTML = myJson[3].title;
+var newMusikDiv4_3 = document.createElement("i");
+newMusikDiv4_3.setAttribute('class','fas fa-play');
+newMusikDiv4_3.setAttribute('onclick','playAudio4()');
+var newMusikDiv4_4 = document.createElement("audio");
+newMusikDiv4_4.setAttribute("id","audio4");
+var newMusikDiv4_5 = document.createElement("source");
+newMusikDiv4_5.setAttribute("type","audio/mp3");
+newMusikDiv4_5.setAttribute("src", myJson[3].path);
+var newMusikDiv4_6 = document.createElement("i");
+newMusikDiv4_6.setAttribute('class','fas fa-pause');
+newMusikDiv4_6.setAttribute('onclick','pauseAudio4()');
+document.getElementById("musik4").appendChild(newMusikDiv4_1);
+document.getElementById("musik4").appendChild(newMusikDiv4_2);
+document.getElementById("musik4").appendChild(newMusikDiv4_3);
+document.getElementById("musik4").appendChild(newMusikDiv4_4);
+document.getElementById("audio4").appendChild(newMusikDiv4_5);
+document.getElementById("musik4").appendChild(newMusikDiv4_6);
+
+var newMusikDiv5_1 = document.createElement("div");
+newMusikDiv5_1.setAttribute('style', 'width: 30%; float:left');
+newMusikDiv5_1.innerHTML = myJson[4].artist;
+var newMusikDiv5_2 = document.createElement("div");
+newMusikDiv5_2.setAttribute('style', 'width: 30%; float:left');
+newMusikDiv5_2.innerHTML = myJson[4].title;
+var newMusikDiv5_3 = document.createElement("i");
+newMusikDiv5_3.setAttribute('class','fas fa-play');
+newMusikDiv5_3.setAttribute('onclick','playAudio5()');
+var newMusikDiv5_4 = document.createElement("audio");
+newMusikDiv5_4.setAttribute("id","audio5");
+var newMusikDiv5_5 = document.createElement("source");
+newMusikDiv5_5.setAttribute("type","audio/mp3");
+newMusikDiv5_5.setAttribute("src", myJson[4].path);
+var newMusikDiv5_6 = document.createElement("i");
+newMusikDiv5_6.setAttribute('class','fas fa-pause');
+newMusikDiv5_6.setAttribute('onclick','pauseAudio5()');
+document.getElementById("musik5").appendChild(newMusikDiv5_1);
+document.getElementById("musik5").appendChild(newMusikDiv5_2);
+document.getElementById("musik5").appendChild(newMusikDiv5_3);
+document.getElementById("musik5").appendChild(newMusikDiv5_4);
+document.getElementById("audio5").appendChild(newMusikDiv5_5);
+document.getElementById("musik5").appendChild(newMusikDiv5_6);
+
+var newMusikDiv6_1 = document.createElement("div");
+newMusikDiv6_1.setAttribute('style', 'width: 30%; float:left');
+newMusikDiv6_1.innerHTML = myJson[5].artist;
+var newMusikDiv6_2 = document.createElement("div");
+newMusikDiv6_2.setAttribute('style', 'width: 30%; float:left');
+newMusikDiv6_2.innerHTML = myJson[5].title;
+var newMusikDiv6_3 = document.createElement("i");
+newMusikDiv6_3.setAttribute('class','fas fa-play');
+newMusikDiv6_3.setAttribute('onclick','playAudio6()');
+var newMusikDiv6_4 = document.createElement("audio");
+newMusikDiv6_4.setAttribute("id","audio6");
+var newMusikDiv6_5 = document.createElement("source");
+newMusikDiv6_5.setAttribute("type","audio/mp3");
+newMusikDiv6_5.setAttribute("src", myJson[5].path);
+var newMusikDiv6_6 = document.createElement("i");
+newMusikDiv6_6.setAttribute('class','fas fa-pause');
+newMusikDiv6_6.setAttribute('onclick','pauseAudio6()');
+document.getElementById("musik6").appendChild(newMusikDiv6_1);
+document.getElementById("musik6").appendChild(newMusikDiv6_2);
+document.getElementById("musik6").appendChild(newMusikDiv6_3);
+document.getElementById("musik6").appendChild(newMusikDiv6_4);
+document.getElementById("audio6").appendChild(newMusikDiv6_5);
+document.getElementById("musik6").appendChild(newMusikDiv6_6);
+
 
 }
 
@@ -474,8 +569,8 @@ function gehAn(){
   mainElement.appendChild(imgDiv);
 
   var img = document.createElement("img");
-  img.setAttribute('src', 'logo.jpg');
-  img.setAttribute('style', 'width:400px');
+  img.setAttribute('src', 'elon.jpg');
+  img.setAttribute('style', 'padding-top:10px');
   imgDiv.appendChild(img);
 
   document.getElementById("io2").style.display ="block";
@@ -496,7 +591,7 @@ function gehAus(){
 
 async function fetchLock() {
 
-  const response = await fetch('http://169.254.65.26:5000/action/lock');
+  const response = await fetch('http://192.168.0.52:5000/action/lock');
   const myJson = await response.json();
   console.log(JSON.stringify(myJson));
 
@@ -504,7 +599,7 @@ async function fetchLock() {
 
 async function fetchUnLock() {
 
-  const response = await fetch('http://169.254.65.26:5000/action/unlock');
+  const response = await fetch('http://192.168.0.52:5000/action/unlock');
   const myJson = await response.json();
   console.log(JSON.stringify(myJson));
 
@@ -527,4 +622,22 @@ function playAudio3() {
 }
 function pauseAudio3(){
   document.getElementById("audio3").pause();
+}
+function playAudio4() {
+  document.getElementById("audio4").play();
+}
+function pauseAudio4(){
+  document.getElementById("audio4").pause();
+}
+function playAudio5() {
+  document.getElementById("audio5").play();
+}
+function pauseAudio5(){
+  document.getElementById("audio5").pause();
+}
+function playAudio6() {
+  document.getElementById("audio6").play();
+}
+function pauseAudio6(){
+  document.getElementById("audio6").pause();
 }
