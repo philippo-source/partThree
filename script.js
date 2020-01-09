@@ -26,9 +26,7 @@ function handleHeaderClick(event) {
         case 'btnCarData':
             createCarDataDivs();
             break;
-        case 'btnLogger':
-            logger();
-              break;
+        
     }
 
 }
