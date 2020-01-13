@@ -26,8 +26,8 @@ header {
     border-color: gray;
     display: grid;
     grid-template-areas:
-        "a a a a a ";
-    grid-template-columns: repeat(5, 1fr);
+        "a a a a  ";
+    grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 1fr;
 }
 
@@ -62,27 +62,10 @@ footer {
     grid-template-rows: auto;
 }
 
-#image {
-    grid-area: e;
-    margin: 0px;
-    background-image: url('Logo.jpg');
-    width: 100%;
-    height: 100%;
-    /* object-fit: cover; */
-    overflow: hidden;
-    display: none;
-    background-repeat: no-repeat;
-}
 
 #io {
     grid-area: e;
     margin: 0px;
-    /* height: 200px; */
-    /* width: 50%; */
-    /* background-image: url('power-off-solid.svg'); */
-    /* width: 66%; */
-    /* height: auto; */
-    /* object-fit: cover; */
     overflow: hidden;
     background-repeat: no-repeat;
 }
@@ -108,14 +91,11 @@ header button {
 
 button {
 
-
     margin: 5px;
-
     border-style: solid;
-
     font-size: 0.5em;
     border-radius: 10px;
-    /*display: none;*/
+
 }
 
 
@@ -125,9 +105,6 @@ footer div.fadeOut {
 }
 
 footer div {
-    /* opacity: 1; */
-    /* transition: all ease 0s; */
-    /* transition-delay: 0s; */
     font-size: 1.5em;
 }
 
