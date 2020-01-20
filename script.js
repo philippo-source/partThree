@@ -35,6 +35,8 @@ function handleHeaderClick(event) {
 
 function createMapsDivs() {
 
+  clearInterval(myTimer);
+
   let mainElement = document.querySelector('main');
 
   mainElement.innerHTML = '';
@@ -63,28 +65,7 @@ function createMapsDivs() {
 
 }
 
-function logger() {
-  let mainElement = document.querySelector('main');
 
-  mainElement.innerHTML = '';
-
-  var log = document.createElement("div");
-  log.setAttribute('id', 'log');
-  mainElement.appendChild(log);
-
-  if (!console) {
-    console = {};
-  }
-  var old = console.log;
-  var logger = document.getElementById('log');
-  console.log = function (message) {
-    if (typeof message == 'object') {
-      logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : String(message)) + '<br />';
-    } else {
-      logger.innerHTML += message + '<br />';
-    }
-  }
-}
 
 
 
@@ -97,7 +78,7 @@ function showPosition(position) {
 }
 
 
-
+var myTimer;
 
 async function createCarDataDivs() {
 
@@ -198,25 +179,30 @@ async function createCarDataDivs() {
   document.getElementById("CarData7").appendChild(newCarDataDiv7_1);
   document.getElementById("CarData7").appendChild(newCarDataDiv7_2);
 
-  setInterval(async function () {
-    const response = await fetch('http://192.168.0.54:5000/status');
-    const myJson = await response.json();
-    console.log(JSON.stringify(myJson));
-
-
-    document.getElementById("CarData1").children[1].innerText = Math.round(myJson.speed) + " km/h";
-    document.getElementById("CarData3").children[1].innerText = myJson.consumption + " l/100km";
-    document.getElementById("CarData4").children[1].innerText = Math.round(70 / myJson.consumption * 100) + "km";
-    document.getElementById("CarData5").children[1].innerText = Math.round(myJson.humidity) + " %";
-    document.getElementById("CarData6").children[1].innerText = Math.round(myJson.pressure) + " psi";
-    document.getElementById("CarData7").children[1].innerText = Math.round(myJson.temp, 100) + " °C";
-
-
-  }, 2000);
+  myTimer = setInterval(liveData, 1000);
 
 }
 
+
+async function liveData() {
+   
+  const response = await fetch('http://192.168.0.52:5000/status');
+  const myJson = await response.json();
+  console.log(JSON.stringify(myJson));
+ 
+ 
+  document.getElementById("CarData1").children[1].innerText = Math.round(myJson.speed) + " km/h";
+  document.getElementById("CarData3").children[1].innerText = myJson.consumption + " l/100km";
+  document.getElementById("CarData4").children[1].innerText = Math.round(70/myJson.consumption*100) + "km";
+  document.getElementById("CarData5").children[1].innerText = Math.round(myJson.humidity) + " %";
+  document.getElementById("CarData6").children[1].innerText = Math.round(myJson.pressure) + " psi";
+  document.getElementById("CarData7").children[1].innerText = Math.round(myJson.temp,100) + " °C";
+ 
+}
+
 function createLockDivs() {
+
+  clearInterval(myTimer);
 
   let mainElement = document.querySelector('main');
 
