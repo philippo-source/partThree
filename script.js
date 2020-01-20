@@ -186,7 +186,7 @@ async function createCarDataDivs() {
 
 async function liveData() {
    
-  const response = await fetch('http://192.168.0.52:5000/status');
+  const response = await fetch('http://192.168.0.54:5000/status');
   const myJson = await response.json();
   console.log(JSON.stringify(myJson));
  
